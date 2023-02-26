@@ -30,7 +30,22 @@ ALLOWED_HOSTS = []
 
 # Application definition
 
-CUSTOM_APPS = ["users.apps.UsersConfig"]
+THIRD_PARTY_APPS = [
+    "rest_framework",
+]
+
+CUSTOM_APPS = [
+    "common.apps.CommonConfig",
+    "users.apps.UsersConfig",
+    "rooms.apps.RoomsConfig",
+    "experiences.apps.ExperiencesConfig",
+    "categories.apps.CategoriesConfig",
+    "reviews.apps.ReviewsConfig",
+    "wishlists.apps.WishlistsConfig",
+    "bookings.apps.BookingsConfig",
+    "medias.apps.MediasConfig",
+    "direct_messages.apps.DirectMessagesConfig",
+]
 
 SYSTEM_APPS = [
     "django.contrib.admin",
@@ -41,7 +56,7 @@ SYSTEM_APPS = [
     "django.contrib.staticfiles",
 ]
 
-INSTALLED_APPS = SYSTEM_APPS + CUSTOM_APPS
+INSTALLED_APPS = SYSTEM_APPS + THIRD_PARTY_APPS + CUSTOM_APPS
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
@@ -107,9 +122,9 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/4.1/topics/i18n/
 
-LANGUAGE_CODE = "en-us"
+LANGUAGE_CODE = "ko-kr"
 
-TIME_ZONE = "UTC"
+TIME_ZONE = "Asia/Seoul"
 
 USE_I18N = True
 
@@ -130,3 +145,9 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 # Auth
 
 AUTH_USER_MODEL = "users.User"
+
+MEDIA_ROOT = "uploads"
+
+MEDIA_URL = "user-uploads/"
+
+PAGE_SIZE = 5

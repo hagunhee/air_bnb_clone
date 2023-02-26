@@ -1,0 +1,24 @@
+from django.db import models
+from common.models import CommonModel
+
+
+class Category(CommonModel):
+
+    """Room and Experience Category"""
+
+    class CategoryKindChoices(models.TextChoices):
+        ROOMS = "rooms", "Rooms"
+        EXPERIENCES = "experiences", "Experiences"
+
+    name = models.CharField(max_length=50)
+    kind = models.CharField(
+        max_length=15,
+        choices=CategoryKindChoices.choices,
+    )
+
+    def __str__(self) -> str:
+        return f"{self.kind.title()}:{self.name}"
+        # title메서드가 문자열의 가장 앞부분을 대문자로 바꿔준다.
+
+    class Meta:
+        verbose_name_plural = "Categories"
