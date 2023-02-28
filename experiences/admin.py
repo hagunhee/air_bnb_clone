@@ -17,6 +17,7 @@ class ExperienceAdmin(admin.ModelAdmin):
 @admin.register(Perk)
 class PerkAdmin(admin.ModelAdmin):
     list_display = (
+        "id",
         "name",
         "details",
         "description",

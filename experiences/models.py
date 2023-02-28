@@ -22,6 +22,7 @@ class Experience(CommonModel):
     description = models.TextField()
     perks = models.ManyToManyField(
         "experiences.Perk",
+        related_name="experiences",
     )
     category = models.ForeignKey(
         "categories.Category",
@@ -30,6 +31,17 @@ class Experience(CommonModel):
         on_delete=models.SET_NULL,
         related_name="experiences",
     )
+
+    def rating(experience):
+        count = experience.reviews.count()
+        if count == 0:
+            return 0
+        else:
+            total_rating = 0
+            for review in experience.reviews.all().value("rating"):
+                total_rating += review["rating"]
+            return round(total_rating / count, 2)
+
     # 카테고리가 삭제되더라도 카스케이드하지 않고 비워둠.
     def __str__(self) -> str:
         return self.name
@@ -54,3 +66,6 @@ class Perk(CommonModel):
 
     def __str__(self) -> str:
         return self.name
+
+    class Meta:
+        verbose_name_plural = "Perks"

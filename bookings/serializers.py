@@ -45,14 +45,45 @@ class CreateRoomBookingSerializer(serializers.ModelSerializer):
         return data
 
 
+class CreateExperienceBookingSerializer(serializers.ModelSerializer):
+
+    experience_check_in = serializers.DateTimeField()
+    experience_check_out = serializers.DateTimeField()
+
+    class Meta:
+        model = Booking
+        fields = (
+            "experience_check_in",
+            "experience_check_out",
+            "guests",
+        )
+
+    def validate_check_in(self, value):
+        now = timezone.localtime(timezone.now())
+        if now > value:
+            raise serializers.ValidationError("Can't book in the past!")
+        return value
+
+    def validate_check_out(self, value):
+        now = timezone.localtime(timezone.now())
+        if now > value:
+            raise serializers.ValidationError("Can't book in the past!")
+        return value
+
+    def validate(self, data):
+        if data["experience_check_out"] <= data["experience_check_in"]:
+            raise serializers.ValidationError("Check in should be amaller than check out.")
+        return data
+
+
 class PublicBookingSerializer(serializers.ModelSerializer):
     class Meta:
         model = Booking
         fields = (
             "pk",
             "check",
-            "check_in",
-            "check_out",
+            "experience_check_in",
+            "experience_check_out",
             "experience_time",
             "guests",
         )

@@ -31,6 +31,7 @@ class RoomDetailSerializer(serializers.ModelSerializer):
     is_owner = serializers.SerializerMethodField()
     is_liked = serializers.SerializerMethodField()
     photos = PhotoSerializer(many=True, read_only=True)
+    reviews = ReviewSerializer(read_only=True, many=True)
 
     class Meta:
         model = Room

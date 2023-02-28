@@ -19,7 +19,7 @@ class Room(CommonModel):
     city = models.CharField(max_length=80, default="서울")
     price = models.PositiveIntegerField()
     rooms = models.PositiveIntegerField()
-    torilets = models.PositiveIntegerField()
+    toilets = models.PositiveIntegerField()
     description = models.TextField(blank=True)
     address = models.CharField(max_length=250)
     pet_friendly = models.BooleanField(default=True)
