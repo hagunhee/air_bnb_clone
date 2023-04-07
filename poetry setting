@@ -1,0 +1,4 @@
+poetry add 
+            django environ
+            pyjwt
+            

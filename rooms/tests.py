@@ -1,6 +1,9 @@
 from rest_framework.test import APITestCase
 from . import models
+from users.models import User
 
+# 테스트 코드는 전부 똑같다. 상태코드를 확인하고,
+# 예상했떤 것과 같은 name이 나오는지 확인한다.
 # 장고가 테스트해주길 원한다면 'test_'로 시작하는 메서드로 실행을 해야한다.
 class TestAmenities(APITestCase):
     URL = "/api/v1/rooms/amenities/"
@@ -124,3 +127,28 @@ class TestAmenity(APITestCase):
         response = self.client.delete("/api/v1/rooms/amenities/1")
 
         self.assertEqual(response.status_code, 204)
+
+
+class TestRoom(APITestCase):
+    def setUp(self):
+        user = User.objects.create(
+            username="test",
+        )
+        user.set_password("123")
+        user.save()
+        self.user = user
+
+    def test_create_room(self):
+
+        response = self.client.post("/api/v1/rooms/")
+        self.assertEqual(response.status_code, 403)
+
+        """        self.client.login(
+                username="test",
+            password="123",
+        )
+        """
+        # forcelogin을 사용하면 비밀번호가 필요없다.
+        self.client.force_login(self.user)
+        response = self.client.post("/api/v1/rooms/")
+        print(response.json())
