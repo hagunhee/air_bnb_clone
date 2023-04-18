@@ -177,3 +177,7 @@ CORS_ORIGIN_WHITELIST = [
     'http://127.0.0.1:3000',  # 허용할 도메인을 목록에 추가
 ]
 CORS_ALLOW_CREDENTIALS = True
+
+CSRF_TRUSTED_ORIGINS = ["http://127.0.0.1:3000"]
+
+GH_SECRET = env("GH_SECRET")
