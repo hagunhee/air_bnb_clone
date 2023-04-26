@@ -161,10 +161,6 @@ class GithubLogIn(APIView):
                 },
             )
             user_emails = user_emails.json()
-            print(user_emails[0]["email"])
-            print(user_data.get("login"))
-            print(user_data.get("name"))
-            print(user_data.get("avatar_url"))
             try:
                 user = User.objects.get(email=user_emails[0]["email"])
                 login(request, user)
@@ -227,4 +223,40 @@ class KakaoLogIn(APIView):
                 login(request, user)
                 return Response(status=status.HTTP_200_OK)
         except Exception:
+            return Response(status=status.HTTP_400_BAD_REQUEST)
+
+
+class SignUp(APIView):
+    # from django.contrib.auth import authenticate의 authenticate는 username과 password이 맞다면 두 가지를 돌려주는 function.
+    # 그리고 토큰과 쿠키를 받아와서 자동으로 생성 등을 해준다. 그래서 request가 같이 필요한 듯?
+
+    def post(self, request):
+        username = request.data.get("username")
+        password = request.data.get("password")
+        name = request.data.get("name")
+        email = request.data.get("email")
+        # Signup 시에는 username, password, name, email을 받아와야 한다.
+        # 그리고 먼저 데이터베이스에 접근해 username과 email이 이미 존재하는지 확인해야 한다.
+
+        try:
+            if not username or not password or not name or not email:
+                raise Response(
+                    {"error": "All fields are required"}, status=status.HTTP_400_BAD_REQUEST
+                )
+            if User.objects.filter(username=username).exists():
+                return Response(
+                    {"error": "Username already exists"}, status=status.HTTP_400_BAD_REQUEST
+                )
+            if User.objects.filter(email=email).exists():
+                return Response({"error": "Email already exists"})
+            user = User.objects.create_user(
+                username=username,
+                password=password,
+                email=email,
+                name=name,
+            )
+            user.save()
+            login(request, user)
+            return Response({"ok": "Welcome!"})
+        except ParseError:
             return Response(status=status.HTTP_400_BAD_REQUEST)
