@@ -11,13 +11,17 @@ class AmenitySerializer(serializers.ModelSerializer):
     class Meta:
         model = Amenity
         fields = (
+            "pk",
             "name",
             "description",
         )
 
 
-class RoomDetailSerializer(serializers.ModelSerializer):
+# 면세점에서 구매한 물건을 해외로 재판매할 때 싱가폴, 인도네시아, 말레이시아 , 태국등에서는 면세품을 수입해도 괜찮나?
+# 면세점에서 구매한 물건을 위 나라에서 판매할 때 세금을 납부해야 하나?
 
+
+class RoomDetailSerializer(serializers.ModelSerializer):
     owner = TinyUserSerializer(read_only=True)
     amenities = AmenitySerializer(
         many=True,
@@ -43,21 +47,23 @@ class RoomDetailSerializer(serializers.ModelSerializer):
         return room.rating()
 
     def get_is_owner(self, room):
-        request = self.context["request"]
-        return room.owner == request.user
+        request = self.context.get("request")
+        if request:
+            return room.owner == request.user
+        return False
 
     def get_is_liked(self, room):
-        request = self.context["request"]
-        if request.user.is_authenticated:
-        # 룸을 보고 있는 user가 소유한 wishlist들을 찾는다.
-        # rooms list안에 사용자가 보고있는 room을 가지고 있는 wishlist를 찾아낸다.
-            return Wishlist.objects.filter(user=request.user, rooms__id=room.pk).exists()
+        request = self.context.get("request")
+        if request:
+            if request.user.is_authenticated:
+                # 룸을 보고 있는 user가 소유한 wishlist들을 찾는다.
+                # rooms list안에 사용자가 보고있는 room을 가지고 있는 wishlist를 찾아낸다.
+                return Wishlist.objects.filter(user=request.user, rooms__id=room.pk).exists()
         return False
         # user가 만든 wishlist중에 room id가 있는 room list를 포함한 wishlist를 찾아 유무를 확인해준다.
 
 
 class RoomListSerializer(serializers.ModelSerializer):
-
     rating = serializers.SerializerMethodField()
 
     is_owner = serializers.SerializerMethodField()
